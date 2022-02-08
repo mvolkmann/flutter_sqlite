@@ -1,11 +1,11 @@
 class Dog {
-  int id;
+  int? id;
   int age;
   String breed;
   String name;
 
   Dog({
-    this.id = 0,
+    this.id,
     required this.age,
     required this.breed,
     required this.name,

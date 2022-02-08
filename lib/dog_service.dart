@@ -6,20 +6,24 @@ class DogService {
 
   DogService({required this.database});
 
-  Future<void> create(Dog dog) async {
-    await database.insert(
+  Future<void> create(Dog dog) {
+    return database.insert(
       'dogs',
       dog.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<void> delete(int id) async {
-    await database.delete(
+  Future<void> delete(int id) {
+    return database.delete(
       'dogs',
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<void> deleteAll() {
+    return database.delete('dogs');
   }
 
   Future<List<Dog>> getAll() async {
@@ -35,8 +39,8 @@ class DogService {
     });
   }
 
-  Future<void> update(Dog dog) async {
-    await database.update(
+  Future<void> update(Dog dog) {
+    return database.update(
       'dogs',
       dog.toMap(),
       where: 'id = ?',

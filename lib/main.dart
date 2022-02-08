@@ -57,9 +57,23 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Future<Dog> createDog({
+    required int age,
+    required String breed,
+    required String name,
+  }) async {
+    var dog = Dog(name: name, breed: breed, age: age);
+    await dogService.create(dog);
+    return dog;
+  }
+
   void demo() async {
-    var comet = Dog(name: 'Comet', breed: 'Whippet', age: 1);
-    await dogService.create(comet);
+    await dogService.deleteAll();
+
+    await createDog(name: 'Maisey', breed: 'TWC', age: 12);
+    await createDog(name: 'Ramsay', breed: 'NAID', age: 6);
+    await createDog(name: 'Oscar', breed: 'GSP', age: 4);
+    var comet = await createDog(name: 'Comet', breed: 'Whippet', age: 1);
 
     var dogs = await dogService.getAll();
     print('main.dart demo: initial dogs = $dogs');
@@ -67,10 +81,10 @@ class _HomeState extends State<Home> {
     comet.age += 1;
     await dogService.update(comet);
 
-    await dogService.delete(comet.id);
+    await dogService.delete(comet.id!);
 
     dogs = await dogService.getAll();
-    print('main.dart demo: final dos = $dogs');
+    print('main.dart demo: final dogs = $dogs');
   }
 
   @override
