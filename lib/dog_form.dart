@@ -4,7 +4,7 @@ import './dog.dart';
 import './extensions/widget_extensions.dart';
 
 class DogForm extends StatefulWidget {
-  final Dog dog;
+  final Dog dog; // id is null when adding
   final Function onUpdate;
 
   DogForm({
@@ -35,7 +35,7 @@ class _DogFormState extends State<DogForm> {
         if (_dirty)
           TextButton(
             child: Text(
-              'Update',
+              dog.id == null ? 'Add' : 'Update',
               style: TextStyle(color: Colors.white),
             ),
             onPressed: _update,

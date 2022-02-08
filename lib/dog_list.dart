@@ -48,13 +48,7 @@ class _DogListState extends State<DogList> {
                 onUpdate: widget.onUpdate,
               ),
             ),
-          ).then((_) {
-            // This is called when navigation returns to this page.
-            // The argument will be null.
-            // Calling setState forces this widget to call build again
-            // which is needed if the value of dog.like changed.
-            setState(() {});
-          });
+          );
         });
   }
 }

@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import './dog.dart';
+import './dog_form.dart';
 import './dog_list.dart';
 import './dog_service.dart';
 
@@ -129,7 +130,18 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          print('got press');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DogForm(
+                dog: Dog(age: 0, breed: '', name: ''),
+                onUpdate: (dog) async {
+                  await dogService!.create(dog);
+                  setState(() => dogs.add(dog));
+                },
+              ),
+            ),
+          );
         },
       ),
     );
