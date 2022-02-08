@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import './dog.dart';
+import './dog_list.dart';
 import './dog_service.dart';
 
 const title = 'My App';
@@ -27,21 +28,32 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late DogService dogService;
+  DogService? dogService;
+  var dogs = <Dog>[];
 
   @override
   void initState() {
     super.initState();
 
-    dbSetup().then((db) {
+    getDatabase().then((db) {
       setState(() {
         dogService = DogService(database: db);
-        demo();
+        createDogs();
+        //demo();
       });
     });
   }
 
-  Future<Database> dbSetup() async {
+  void createDogs() async {
+    dogs.add(await createDog(name: 'Maisey', breed: 'TWC', age: 12));
+    dogs.add(await createDog(name: 'Ramsay', breed: 'NAID', age: 6));
+    dogs.add(await createDog(name: 'Oscar', breed: 'GSP', age: 4));
+    dogs.add(await createDog(name: 'Comet', breed: 'Whippet', age: 1));
+    print('main.dart createDogs: dogs = $dogs');
+    setState(() {});
+  }
+
+  Future<Database> getDatabase() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     return openDatabase(
@@ -63,12 +75,12 @@ class _HomeState extends State<Home> {
     required String name,
   }) async {
     var dog = Dog(name: name, breed: breed, age: age);
-    await dogService.create(dog);
+    await dogService!.create(dog);
     return dog;
   }
 
   void demo() async {
-    await dogService.deleteAll();
+    await dogService!.deleteAll();
 
     var maisey = await createDog(name: 'Maisey', breed: 'TWC', age: 12);
     await createDog(name: 'Ramsay', breed: 'NAID', age: 6);
@@ -76,14 +88,14 @@ class _HomeState extends State<Home> {
     var comet = await createDog(name: 'Comet', breed: 'Whippet', age: 1);
 
     comet.age += 1;
-    await dogService.update(comet);
+    await dogService!.update(comet);
 
-    var dogs = await dogService.getAll();
+    var dogs = await dogService!.getAll();
     print('main.dart demo: initial dogs = $dogs');
 
-    await dogService.delete(maisey.id!);
+    await dogService!.delete(maisey.id!);
 
-    dogs = await dogService.getAll();
+    dogs = await dogService!.getAll();
     print('main.dart demo: final dogs = $dogs');
   }
 
@@ -96,8 +108,16 @@ class _HomeState extends State<Home> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Add content here.'),
+          children: [
+            if (dogService == null) CircularProgressIndicator(),
+            if (dogService != null)
+              DogList(
+                dogs: dogs,
+                onDelete: (dog) async {
+                  await dogService!.delete(dog.id);
+                  setState(() => dogs.remove(dog));
+                },
+              ),
           ],
         ),
       ),
