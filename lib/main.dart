@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
           'id integer primary key autoincrement, age integer, breed text, name text)',
         );
       },
-      // The version provides a path to perform database upgrades and downgrades.
+      // The version can be used to perform database upgrades and downgrades.
       version: 1,
     );
   }
