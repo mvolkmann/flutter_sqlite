@@ -32,20 +32,23 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    dbSetup();
+    dbSetup().then((db) {
+      setState(() {
+        database = db;
+        demo();
+      });
+    });
   }
 
-  void dbSetup() async {
+  Future<Database> dbSetup() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    database = await openDatabase(
+    return openDatabase(
       join(await getDatabasesPath(), 'dog.db'),
       onCreate: (db, version) {
-        //TODO: What does this do if the table already exists?
-        //TODO: Will this automatically assign auto-incrementing ids?
         return db.execute(
-          'create table dogs('
-          'id integer primary key, age integer, breed text, name text)',
+          'create table if not exists dogs('
+          'id integer primary key autoincrement, age integer, breed text, name text)',
         );
       },
       // The version provides a path to perform database upgrades and downgrades.

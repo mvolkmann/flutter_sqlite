@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
 class Dog {
-  int id = 0;
+  int id;
   int age;
   String breed;
   String name;
 
   Dog({
-    this.id,
+    this.id = 0,
     required this.age,
     required this.breed,
     required this.name,
