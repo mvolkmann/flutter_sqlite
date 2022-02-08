@@ -6,12 +6,14 @@ class DogService {
 
   DogService({required this.database});
 
-  Future<void> create(Dog dog) {
-    return database.insert(
+  Future<Dog> create(Dog dog) async {
+    var id = await database.insert(
       'dogs',
       dog.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    dog.id = id;
+    return dog;
   }
 
   Future<void> delete(int id) {
@@ -40,6 +42,8 @@ class DogService {
   }
 
   Future<void> update(Dog dog) {
+    print('dog_service.dart update: dog = $dog');
+    print('dog_service.dart update: dog.id = ${dog.id}');
     return database.update(
       'dogs',
       dog.toMap(),

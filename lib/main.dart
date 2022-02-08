@@ -70,18 +70,18 @@ class _HomeState extends State<Home> {
   void demo() async {
     await dogService.deleteAll();
 
-    await createDog(name: 'Maisey', breed: 'TWC', age: 12);
+    var maisey = await createDog(name: 'Maisey', breed: 'TWC', age: 12);
     await createDog(name: 'Ramsay', breed: 'NAID', age: 6);
     await createDog(name: 'Oscar', breed: 'GSP', age: 4);
     var comet = await createDog(name: 'Comet', breed: 'Whippet', age: 1);
 
-    var dogs = await dogService.getAll();
-    print('main.dart demo: initial dogs = $dogs');
-
     comet.age += 1;
     await dogService.update(comet);
 
-    await dogService.delete(comet.id!);
+    var dogs = await dogService.getAll();
+    print('main.dart demo: initial dogs = $dogs');
+
+    await dogService.delete(maisey.id!);
 
     dogs = await dogService.getAll();
     print('main.dart demo: final dogs = $dogs');
