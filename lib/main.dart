@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import './dog.dart';
+import './dog_service.dart';
 
 const title = 'My App';
 
@@ -26,7 +27,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late Database database;
+  late DogService dogService;
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _HomeState extends State<Home> {
 
     dbSetup().then((db) {
       setState(() {
-        database = db;
+        dogService = DogService(database: db);
         demo();
       });
     });
@@ -58,18 +59,18 @@ class _HomeState extends State<Home> {
 
   void demo() async {
     var comet = Dog(name: 'Comet', breed: 'Whippet', age: 1);
-    await insertDog(database, comet);
+    await dogService.create(comet);
 
-    var dogs = await getDogs(database);
+    var dogs = await dogService.getAll();
     print('main.dart demo: initial dogs = $dogs');
 
     comet.age += 1;
-    await updateDog(database, comet);
+    await dogService.update(comet);
 
-    await deleteDog(database, comet.id);
+    await dogService.delete(comet.id);
 
-    dogs = await getDogs(database);
-    print('main.dart demo: final dogs = $dogs');
+    dogs = await dogService.getAll();
+    print('main.dart demo: final dos = $dogs');
   }
 
   @override
