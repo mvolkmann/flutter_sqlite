@@ -11,6 +11,16 @@ class Dog {
     required this.name,
   });
 
+  static Dog fromMap(Map<String, dynamic> map) {
+    print('dog.dart fromMap: map = $map');
+    return Dog(
+      age: int.parse(map['age']),
+      breed: map['breed'],
+      id: map['id'],
+      name: map['name'],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {'id': id, 'age': age, 'breed': breed, 'name': name};
   }

@@ -5,37 +5,51 @@ import './extensions/widget_extensions.dart';
 
 class DogForm extends StatefulWidget {
   final Dog dog;
+  final Function onUpdate;
 
-  DogForm({required this.dog, Key? key}) : super(key: key);
+  DogForm({
+    required this.dog,
+    required this.onUpdate,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<DogForm> createState() => _DogFormState();
 }
 
 class _DogFormState extends State<DogForm> {
-  final _dirty = true;
+  var _dirty = false;
+  var _map = <String, dynamic>{};
+
+  @override
+  void initState() {
+    super.initState();
+    _map = widget.dog.toMap();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('dog_form.dart build: _dirty = $_dirty');
     var dog = widget.dog;
     return Scaffold(
       appBar: AppBar(title: Text(dog.name), actions: [
-        TextButton(
-          child: Text(
-            'Update',
-            style: TextStyle(color: Colors.white),
+        if (_dirty)
+          TextButton(
+            child: Text(
+              'Update',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: _update,
           ),
-          onPressed: _dirty ? _update : null,
-        ),
       ]),
       body: Form(
         child: Column(
           children: [
-            _buildInput(label: 'Name', value: dog.name),
-            _buildInput(label: 'Breed', value: dog.breed),
+            _buildInput(label: 'Name', property: 'name'),
+            _buildInput(label: 'Breed', property: 'breed'),
             _buildInput(
               label: 'Age',
-              value: dog.age.toString(),
+              property: 'age',
               inputType: TextInputType.number,
             ),
           ],
@@ -46,20 +60,28 @@ class _DogFormState extends State<DogForm> {
 
   Widget _buildInput({
     required String label,
-    required String value,
+    required String property,
     TextInputType? inputType,
   }) {
+    var value = _map[property].toString();
+    var keyboardType = value is int ? TextInputType.number : TextInputType.text;
     return TextFormField(
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         labelText: label,
       ),
       initialValue: value,
-      keyboardType: inputType,
+      keyboardType: keyboardType,
+      onChanged: (value) {
+        _map[property] = value;
+        setState(() => _dirty = true);
+      },
     );
   }
 
   void _update() {
-    print('dog_form.dart _update: entered');
+    var dog = Dog.fromMap(_map);
+    widget.onUpdate(dog);
+    Navigator.pop(context);
   }
 }

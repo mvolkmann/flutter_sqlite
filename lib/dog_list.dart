@@ -6,10 +6,12 @@ import './extensions/widget_extensions.dart';
 class DogList extends StatefulWidget {
   final List<Dog> dogs;
   final Function onDelete;
+  final Function onUpdate;
 
   DogList({
     required this.dogs,
     required this.onDelete,
+    required this.onUpdate,
     Key? key,
   }) : super(key: key);
 
@@ -33,7 +35,10 @@ class _DogListState extends State<DogList> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DogForm(dog: dogs[index]),
+              builder: (context) => DogForm(
+                dog: dogs[index],
+                onUpdate: widget.onUpdate,
+              ),
             ),
           ).then((_) {
             // This is called when navigation returns to this page.
