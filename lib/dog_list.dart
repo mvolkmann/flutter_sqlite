@@ -24,19 +24,27 @@ class _DogListState extends State<DogList> {
   Widget build(BuildContext context) {
     var dogs = widget.dogs;
     return ListView.separated(
-      itemBuilder: (_, index) => ListTile(
-        title: Text(dogs[index].name),
-        subtitle: Text(dogs[index].breed),
+      itemBuilder: (_, index) => _buildTile(dogs[index]),
+      separatorBuilder: (_, index) => Divider(thickness: 1),
+      itemCount: dogs.length,
+    ).expanded;
+  }
+
+  Widget _buildTile(Dog dog) {
+    var subtitle = '${dog.breed} - age ${dog.age}';
+    return ListTile(
+        title: Text(dog.name),
+        subtitle: Text(subtitle),
         trailing: IconButton(
           icon: Icon(Icons.delete, color: Colors.red),
-          onPressed: () => widget.onDelete(dogs[index]),
+          onPressed: () => widget.onDelete(dog),
         ),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => DogForm(
-                dog: dogs[index],
+                dog: dog,
                 onUpdate: widget.onUpdate,
               ),
             ),
@@ -47,10 +55,6 @@ class _DogListState extends State<DogList> {
             // which is needed if the value of dog.like changed.
             setState(() {});
           });
-        },
-      ),
-      separatorBuilder: (_, index) => Divider(thickness: 1),
-      itemCount: dogs.length,
-    ).expanded;
+        });
   }
 }

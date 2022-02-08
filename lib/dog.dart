@@ -12,14 +12,15 @@ class Dog {
   });
 
   static Dog fromMap(Map<String, dynamic> map) {
-    print('dog.dart fromMap: map = $map');
     return Dog(
-      age: int.parse(map['age']),
+      age: _toInt(map['age']),
       breed: map['breed'],
       id: map['id'],
       name: map['name'],
     );
   }
+
+  static _toInt(dynamic value) => value is int ? value : int.parse(value);
 
   Map<String, dynamic> toMap() {
     return {'id': id, 'age': age, 'breed': breed, 'name': name};

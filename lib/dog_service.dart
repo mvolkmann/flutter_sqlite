@@ -42,8 +42,6 @@ class DogService {
   }
 
   Future<void> update(Dog dog) {
-    print('dog_service.dart update: dog = $dog');
-    print('dog_service.dart update: dog.id = ${dog.id}');
     return database.update(
       'dogs',
       dog.toMap(),

@@ -118,12 +118,9 @@ class _HomeState extends State<Home> {
                     setState(() => dogs.remove(dog));
                   },
                   onUpdate: (dog) async {
-                    print('main.dart onUpdate: dog = $dog');
                     await dogService!.update(dog);
                     var id = dog.id;
-                    print('main.dart onUpdate: id = $id');
                     var index = dogs.indexWhere((dog) => dog.id == id);
-                    print('main.dart onUpdate: index = $index');
                     setState(() => dogs[index] = dog);
                   }),
           ],

@@ -29,7 +29,6 @@ class _DogFormState extends State<DogForm> {
 
   @override
   Widget build(BuildContext context) {
-    print('dog_form.dart build: _dirty = $_dirty');
     var dog = widget.dog;
     return Scaffold(
       appBar: AppBar(title: Text(dog.name), actions: [
