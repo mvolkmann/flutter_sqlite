@@ -31,37 +31,41 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   DogService? dogService;
   var dogs = <Dog>[];
+  var reset = false; // Set to true to recreate starting dogs.
 
   @override
   void initState() {
     super.initState();
 
-    getDatabase().then((db) {
-      setState(() {
-        dogService = DogService(database: db);
-        createDogs();
-        //demo();
-      });
+    getDatabase().then((db) async {
+      dogService = DogService(database: db);
+      if (reset) {
+        await dogService!.deleteAll();
+        await createDogs();
+      }
+      dogs = await dogService!.getAll();
+      setState(() {});
     });
   }
 
-  void createDogs() async {
-    dogs.add(await createDog(name: 'Maisey', breed: 'TWC', age: 12));
-    dogs.add(await createDog(name: 'Ramsay', breed: 'NAID', age: 6));
-    dogs.add(await createDog(name: 'Oscar', breed: 'GSP', age: 4));
-    dogs.add(await createDog(name: 'Comet', breed: 'Whippet', age: 1));
-    print('main.dart createDogs: dogs = $dogs');
-    setState(() {});
+  Future<void> createDogs() async {
+    await createDog(name: 'Maisey', breed: 'TWC', age: 12);
+    await createDog(name: 'Ramsay', breed: 'NAID', age: 6);
+    await createDog(name: 'Oscar', breed: 'GSP', age: 4);
+    await createDog(name: 'Comet', breed: 'Whippet', age: 1);
   }
 
   Future<Database> getDatabase() async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    print('main.dart getDatabase: entered');
     return openDatabase(
       join(await getDatabasesPath(), 'dog.db'),
       onCreate: (db, version) {
+        // This is only called if the datbase does not yet exist.
+        reset = true;
         return db.execute(
-          'create table if not exists dogs('
+          'create table dogs('
           'id integer primary key autoincrement, age integer, breed text, name text)',
         );
       },
@@ -78,26 +82,6 @@ class _HomeState extends State<Home> {
     var dog = Dog(name: name, breed: breed, age: age);
     await dogService!.create(dog);
     return dog;
-  }
-
-  void demo() async {
-    await dogService!.deleteAll();
-
-    var maisey = await createDog(name: 'Maisey', breed: 'TWC', age: 12);
-    await createDog(name: 'Ramsay', breed: 'NAID', age: 6);
-    await createDog(name: 'Oscar', breed: 'GSP', age: 4);
-    var comet = await createDog(name: 'Comet', breed: 'Whippet', age: 1);
-
-    comet.age += 1;
-    await dogService!.update(comet);
-
-    var dogs = await dogService!.getAll();
-    print('main.dart demo: initial dogs = $dogs');
-
-    await dogService!.delete(maisey.id!);
-
-    dogs = await dogService!.getAll();
-    print('main.dart demo: final dogs = $dogs');
   }
 
   @override
