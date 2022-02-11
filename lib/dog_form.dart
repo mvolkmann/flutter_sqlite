@@ -67,8 +67,9 @@ class _DogFormState extends State<DogForm> {
     final isInt = value is int;
     var keyboardType = isInt ? TextInputType.number : TextInputType.text;
 
-    var formatters = <TextInputFormatter>[];
-    if (isInt) formatters.add(FilteringTextInputFormatter.digitsOnly);
+    var formatters = isInt
+        ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+        : null;
 
     return TextFormField(
       decoration: InputDecoration(
