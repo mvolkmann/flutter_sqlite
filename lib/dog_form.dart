@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // for FilteringTextInputFormatter
 
 import './dog.dart';
 import './extensions/widget_extensions.dart';
@@ -62,17 +63,23 @@ class _DogFormState extends State<DogForm> {
     required String property,
     TextInputType? inputType,
   }) {
-    var value = _map[property].toString();
-    var keyboardType = value is int ? TextInputType.number : TextInputType.text;
+    var value = _map[property];
+    final isInt = value is int;
+    var keyboardType = isInt ? TextInputType.number : TextInputType.text;
+
+    var formatters = <TextInputFormatter>[];
+    if (isInt) formatters.add(FilteringTextInputFormatter.digitsOnly);
+
     return TextFormField(
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         labelText: label,
       ),
-      initialValue: value,
+      initialValue: value.toString(),
+      inputFormatters: formatters,
       keyboardType: keyboardType,
       onChanged: (value) {
-        _map[property] = value;
+        _map[property] = isInt ? int.parse(value) : value;
         setState(() => _dirty = true);
       },
     );
