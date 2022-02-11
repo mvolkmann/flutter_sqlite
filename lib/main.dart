@@ -14,8 +14,19 @@ const title = 'My App';
 void main() => runApp(
       MaterialApp(
         title: title,
+        //theme: ThemeData.light(),
+        //theme: ThemeData.dark(),
+        //theme: ThemeData.light().copyWith(
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Colors.red,
+          ),
+          // This doesn't affect the color of IconButton widgets.
+          iconTheme: IconThemeData(
+            color: Colors.orange,
+          ),
+          primaryColor: Colors.blue,
+          //primarySwatch: Colors.blue,
         ),
         home: const Home(),
       ),
