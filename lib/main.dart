@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
     return openDatabase(
       join(await getDatabasesPath(), 'dog.db'),
       onCreate: (db, version) {
-        // This is only called if the datbase does not yet exist.
+        // This is only called if the database does not yet exist.
         reset = true;
         return db.execute(
           'create table dogs('
